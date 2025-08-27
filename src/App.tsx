@@ -1,5 +1,8 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import "./App.css";
+import GachaPage from "./Gacha";
+
+
 
 function App() {
   const navigate = useNavigate();
@@ -51,28 +54,6 @@ function App() {
         <button onClick={() => navigate("/boss")}>ボス戦</button>
         <button onClick={() => navigate("/settings")}>設定</button>
       </div>
-    </div>
-  );
-}
-
-function GachaPage() {
-  const items = ["成功は小さな努力の積み重ね", "限界を超えろ", "継続は力なり"];
-  const [result, setResult] = useState("");
-
-  return (
-    <div>
-      <h2>ガチャページ</h2>
-      <button
-        onClick={() => {
-          const random = Math.floor(Math.random() * items.length);
-          setResult(items[random]);
-        }}
-      >
-        ガチャを回す
-      </button>
-
-      {/* ガチャ結果に "result" クラスをつける */}
-      <p className={result ? "result" : ""}>{result}</p>
     </div>
   );
 }
