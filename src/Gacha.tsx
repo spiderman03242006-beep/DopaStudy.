@@ -9,7 +9,7 @@ function GachaPage() {
   const gachaPools = {
     文系: ["夏目漱石『吾輩は猫である』", "太宰治『人間失格』", "川端康成『雪国』"],
     理系: ["E=mc^2", "シュレーディンガーの猫", "フーリエ級数展開"],
-    格言: ["継続は力なり", "七転び八起き", "習慣は第二の天性なり"],
+    格言: ["厳しいって　from2024 by ジョージメンズコーチ", "勉強してください！ｂｙ河野げんと", "10分以内にスマホを捨てるろ　そうすれば人生いい方向にいく"],
   };
 
   const rollGacha = (type: keyof typeof gachaPools) => {
@@ -22,8 +22,6 @@ function GachaPage() {
       const randomItem = pool[Math.floor(Math.random() * pool.length)];
       setResult(randomItem);
       setIsSpinning(false);
-    }, 1500);
-  };
 
   return (
     <div style={{ textAlign: "center", marginTop: "2rem" }}>
