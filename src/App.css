@@ -40,3 +40,37 @@
 .read-the-docs {
   color: #888;
 }
+
+
+/* 既存の .read-the-docs の下に追加 */
+
+.result {
+  animation: pop 0.5s ease forwards;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* 既存の .read-the-docs の下に追加 */
+
+.result {
+  animation: pop 0.5s ease forwards;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -56,22 +56,27 @@ function App() {
 }
 
 function GachaPage() {
-  const items = ["成功は小さな努力の積み重ね", "勉強してください！！", "継続は力なり"];
+  const items = ["成功は小さな努力の積み重ね", "限界を超えろ", "継続は力なり"];
   const [result, setResult] = useState("");
 
   return (
     <div>
       <h2>ガチャページ</h2>
-      <button onClick={() => {
-        const random = Math.floor(Math.random() * items.length);
-        setResult(items[random]);
-      }}>
-        名言ガチャ
+      <button
+        onClick={() => {
+          const random = Math.floor(Math.random() * items.length);
+          setResult(items[random]);
+        }}
+      >
+        ガチャを回す
       </button>
-      <p>{result}</p>
+
+      {/* ガチャ結果に "result" クラスをつける */}
+      <p className={result ? "result" : ""}>{result}</p>
     </div>
   );
 }
+
 
 
 export default App;
