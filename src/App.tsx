@@ -1,6 +1,11 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import GachaPage from "./Gacha";
+import { Button } from "@chakra-ui/react"
+
+<Button colorScheme="teal" size="lg">
+  記録する
+</Button>
 
 
 

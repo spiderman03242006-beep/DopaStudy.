@@ -1,5 +1,11 @@
-import  { useState } from "react";
+import { useState } from "react";
 import "./App.css";
+import { Button } from "@chakra-ui/react"
+
+<Button colorScheme="teal" size="lg">
+  記録する
+</Button>
+
 
 function GachaPage() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -9,7 +15,11 @@ function GachaPage() {
   const gachaPools = {
     文系: ["夏目漱石『吾輩は猫である』", "太宰治『人間失格』", "川端康成『雪国』"],
     理系: ["E=mc^2", "シュレーディンガーの猫", "フーリエ級数展開"],
-    格言: ["厳しいって　from2024 by ジョージメンズコーチ", "勉強してください！ｂｙ河野げんと", "10分以内にスマホを捨てるろ　そうすれば人生いい方向にいく"],
+    格言: [
+      "厳しいってfrom2024 by ジョージメンズコーチ",
+      "勉強してください！ｂｙ河野げんと",
+      "10分以内にスマホを捨てるろ　そうすれば人生いい方向にいく",
+    ],
   };
 
   const rollGacha = (type: keyof typeof gachaPools) => {
@@ -22,6 +32,8 @@ function GachaPage() {
       const randomItem = pool[Math.floor(Math.random() * pool.length)];
       setResult(randomItem);
       setIsSpinning(false);
+    }, 1000); // ← ここで1秒後に結果を出す
+  };
 
   return (
     <div style={{ textAlign: "center", marginTop: "2rem" }}>
