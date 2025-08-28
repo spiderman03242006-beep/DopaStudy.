@@ -1,23 +1,64 @@
 import { useState, useEffect } from "react";
-import { Button, TextInput, Title } from "@mantine/core";
+import { Button, TextInput, Title, Group, List } from "@mantine/core";
+import "./explosion.css"; // CSSファイルを別で作る
+
+function formatTime(minutes: number) {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h > 0 && m > 0) return `${h}時間${m}分`;
+  if (h > 0) return `${h}時間`;
+  return `${m}分`;
+}
+
+type LogItem = {
+  minutes: number;
+  timestamp: string;
+};
 
 function RecordPage() {
   const [minutes, setMinutes] = useState("");
-  const [todayTotal, setTodayTotal] = useState(0);
+  const [logs, setLogs] = useState<LogItem[]>([]);
+  const [showExplosion, setShowExplosion] = useState(false);
 
   const todayKey = new Date().toLocaleDateString();
 
   useEffect(() => {
     const saved = localStorage.getItem(todayKey);
-    if (saved) setTodayTotal(Number(saved));
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setLogs(parsed);
+      } catch {}
+    }
   }, []);
 
   const addMinutes = () => {
-    const newTotal = todayTotal + Number(minutes);
-    setTodayTotal(newTotal);
-    localStorage.setItem(todayKey, newTotal.toString());
+    if (!minutes) return;
+
+    const now = new Date();
+    const timestamp = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} ${now.toLocaleTimeString()}`;
+    const newLogs = [...logs, { minutes: Number(minutes), timestamp }];
+    setLogs(newLogs);
+    localStorage.setItem(todayKey, JSON.stringify(newLogs));
     setMinutes("");
+
+    // 🎇 爆発エフェクト開始
+    setShowExplosion(true);
+    setTimeout(() => setShowExplosion(false), 1000);
+
+    // 🔊 爆発音
+    const sound = new Audio("/Sounds/爆発1.mp3");
+    sound.volume = 0.6;
+    sound.play();
   };
+
+  const deleteLog = (index: number) => {
+    const newLogs = logs.filter((_, i) => i !== index);
+    setLogs(newLogs);
+    localStorage.setItem(todayKey, JSON.stringify(newLogs));
+  };
+
+  const todayTotal = logs.reduce((a, b) => a + b.minutes, 0);
 
   return (
     <div style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -30,9 +71,43 @@ function RecordPage() {
         style={{ maxWidth: 200, margin: "1rem auto" }}
       />
       <Button onClick={addMinutes} color="blue">記録する</Button>
-      <div style={{ marginTop: "1rem" }}>
-        今日の合計: {todayTotal} 分
+
+      {/* キャラクター */}
+      <div style={{ marginTop: "2rem", position: "relative", display: "inline-block" }}>
+        <img src="/Characters/グラサンカメ.png" alt="グラサンカメ" width="150" />
+
+        {showExplosion && (
+  <div className="explosion">
+    {Array.from({ length: 15 }).map((_, i) => {
+      const x = Math.random() * 200 - 100; // -100 ~ +100
+      const y = Math.random() * 200 - 100; // -100 ~ +100
+      return (
+        <span
+          key={i}
+          className="particle"
+          style={{ "--x": x, "--y": y } as React.CSSProperties}
+        />
+      );
+    })}
+  </div>
+)}
+
       </div>
+
+      <div style={{ marginTop: "1rem" }}>
+        今日の合計: {formatTime(todayTotal)}
+      </div>
+
+      <List spacing="sm" size="lg" center mt="lg">
+        {logs.map((log, i) => (
+          <List.Item key={i}>
+            <Group justify="space-between">
+              <span>{log.timestamp} - {formatTime(log.minutes)}</span>
+              <Button color="red" size="xs" onClick={() => deleteLog(i)}>削除</Button>
+            </Group>
+          </List.Item>
+        ))}
+      </List>
     </div>
   );
 }

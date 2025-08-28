@@ -1,0 +1,27 @@
+.explosion {
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  width: 0;
+  height: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: orange;
+  border-radius: 50%;
+  animation: explode 0.8s ease-out forwards;
+}
+
+@keyframes explode {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(calc(var(--x) * 1px), calc(var(--y) * 1px)) scale(0.5);
+    opacity: 0;
+  }
+}
