@@ -1,7 +1,9 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import GachaPage from "./Gacha";
-import { Button } from "@mantine/core";   // Mantine はここから！
+import RecordPage from "./RecordPage";   // ← 追加
+import LogPage from "./LogPage";         // ← 追加
+import { Button } from "@mantine/core";
 
 function App() {
   const navigate = useNavigate();
@@ -29,19 +31,13 @@ function App() {
       {/* ページ切り替え */}
       <div style={{ paddingTop: "60px" }}>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <div>
-                <h2>記録ページ</h2>
-                <Button color="blue" onClick={() => alert("Mantine ボタン動作OK!")}>
-                  Mantine ボタン
-                </Button>
-              </div>
-            }
-          />
-          <Route path="/log" element={<h2>ログページ</h2>} />
+          {/* 記録ページ */}
+          <Route path="/" element={<RecordPage />} />
+          {/* ログページ */}
+          <Route path="/log" element={<LogPage />} />
+          {/* ガチャページ */}
           <Route path="/gacha" element={<GachaPage />} />
+          {/* 仮ページたち */}
           <Route path="/boss" element={<h2>ボス戦ページ</h2>} />
           <Route path="/settings" element={<h2>設定ページ</h2>} />
         </Routes>
