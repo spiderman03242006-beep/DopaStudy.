@@ -1,11 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import { Button } from "@chakra-ui/react"
-
-<Button colorScheme="teal" size="lg">
-  記録する
-</Button>
-
+import { Button } from "@mantine/core";  // ← Mantine を使う
 
 function GachaPage() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -16,9 +11,9 @@ function GachaPage() {
     文系: ["夏目漱石『吾輩は猫である』", "太宰治『人間失格』", "川端康成『雪国』"],
     理系: ["E=mc^2", "シュレーディンガーの猫", "フーリエ級数展開"],
     格言: [
-      "厳しいってfrom2024 by ジョージメンズコーチ",
-      "勉強してください！ｂｙ河野げんと",
-      "10分以内にスマホを捨てるろ　そうすれば人生いい方向にいく",
+      "厳しいって from2024 by ジョージメンズコーチ",
+      "勉強してください！by 河野げんと",
+      "10分以内にスマホを捨てろ　そうすれば人生いい方向にいく",
     ],
   };
 
@@ -32,16 +27,16 @@ function GachaPage() {
       const randomItem = pool[Math.floor(Math.random() * pool.length)];
       setResult(randomItem);
       setIsSpinning(false);
-    }, 1000); // ← ここで1秒後に結果を出す
+    }, 1000);
   };
 
   return (
     <div style={{ textAlign: "center", marginTop: "2rem" }}>
       <h2>ガチャを選んでください</h2>
-      <div style={{ margin: "1rem" }}>
-        <button onClick={() => rollGacha("文系")}>Type-文系</button>
-        <button onClick={() => rollGacha("理系")}>Type-理系</button>
-        <button onClick={() => rollGacha("格言")}>Type-格言</button>
+      <div style={{ margin: "1rem", display: "flex", gap: "1rem", justifyContent: "center" }}>
+        <Button color="blue" onClick={() => rollGacha("文系")}>Type-文系</Button>
+        <Button color="green" onClick={() => rollGacha("理系")}>Type-理系</Button>
+        <Button color="pink" onClick={() => rollGacha("格言")}>Type-格言</Button>
       </div>
 
       {selectedType && (
