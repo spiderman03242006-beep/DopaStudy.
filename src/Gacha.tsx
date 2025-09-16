@@ -7,7 +7,9 @@ function GachaPage() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [message, setMessage] = useState<{ text: string; color: string } | null>(null);
 
+  // 🎲 ガチャプール（中身省略）
   const gachaPools = {
     文系: ["夏目漱石『吾輩は猫である』",
     "太宰治『人間失格』",
@@ -62,22 +64,89 @@ function GachaPage() {
     ],
   };
 
+  // 📌 今日の日付キー（朝5時リセット対応）
+  const getTodayKey = () => {
+    const now = new Date();
+    // 5時より前なら「前日」として扱う
+    if (now.getHours() < 5) {
+      now.setDate(now.getDate() - 1);
+    }
+    return now.toLocaleDateString();
+  };
+
+  // 🎰 ガチャ処理
   const rollGacha = (type: keyof typeof gachaPools) => {
+    const today = getTodayKey();
+    const key = `lastGacha_${type}`;
+    const lastPlayed = localStorage.getItem(key);
+
+    // 文系・理系は朝5〜10時のみ
+    if (type !== "格言") {
+      const now = new Date();
+      const hour = now.getHours();
+      if (hour < 5 || hour > 10) {
+        setMessage({ text: "時間外です！早起きしてね！", color: "blueviolet" });
+        return;
+      }
+    }
+
+    // 1日1回制限（格言も含む）
+    if (lastPlayed === today) {
+      setMessage({ text: "今日はもう引きました！", color: "red" });
+      return;
+    }
+
+    // 🎰 ガチャ実行
     setIsSpinning(true);
     setSelectedType(type);
     setResult(null);
+
+    if (type === "格言") {
+      setMessage({ text: "今日の格言ゲット！", color: "green" });
+    } else {
+      setMessage({ text: "1日1回ガチャる", color: "orange" });
+    }
 
     setTimeout(() => {
       const pool = gachaPools[type];
       const randomItem = pool[Math.floor(Math.random() * pool.length)];
       setResult(randomItem);
       setIsSpinning(false);
-    }, 2000); // 2秒回転
+
+      // 🔊 効果音（80%ぐああ, 10%うわあああ, 10%爆発1）
+      const rand = Math.random();
+      let soundPath = "/Sounds/ぐああ.mp3";
+      if (rand < 0.1) soundPath = "/Sounds/うわあああ.mp3";
+      else if (rand < 0.2) soundPath = "/Sounds/爆発1.mp3";
+
+      const sound = new Audio(soundPath);
+      sound.volume = 0.8;
+      sound.play().catch((err) => {
+        console.error("音が再生できませんでした:", err);
+      });
+
+      // 📌 今日引いた記録を保存
+      localStorage.setItem(key, today);
+    }, 2000);
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "2rem" }}>
+    <div style={{ textAlign: "center", marginTop: "2rem", position: "relative" }}>
       <h2>ガチャを選んでください</h2>
+
+      {/* 左上に常にメッセージを出す */}
+      {message && (
+        <div style={{
+          position: "absolute",
+          top: "-2rem",
+          left: "1rem",
+          color: message.color,
+          fontWeight: "bold"
+        }}>
+          {message.text}
+        </div>
+      )}
+
       <div style={{ margin: "1rem", display: "flex", gap: "1rem", justifyContent: "center" }}>
         <Button onClick={() => rollGacha("文系")} color="blue">Type-文系</Button>
         <Button onClick={() => rollGacha("理系")} color="green">Type-理系</Button>
@@ -88,7 +157,7 @@ function GachaPage() {
         <div style={{ marginTop: "2rem" }}>
           <h3>{selectedType}ガチャの結果！</h3>
           <motion.div
-            animate={isSpinning ? { rotate: 360 } : { rotate: 0 }}
+            animate={isSpinning ? { rotate: 180 } : { rotate: 0 }}
             transition={isSpinning ? { repeat: Infinity, duration: 0.5, ease: "linear" } : {}}
             style={{
               display: "inline-block",

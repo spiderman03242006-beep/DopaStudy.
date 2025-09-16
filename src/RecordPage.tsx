@@ -22,6 +22,7 @@ function RecordPage() {
 
   const todayKey = new Date().toLocaleDateString();
 
+  // 🔄 ログの復元
   useEffect(() => {
     const saved = localStorage.getItem(todayKey);
     if (saved) {
@@ -32,6 +33,7 @@ function RecordPage() {
     }
   }, []);
 
+  // ✅ 改善版: 累積ダメージ & 未設定なら無効
   const addMinutes = () => {
     if (!minutes) return;
 
@@ -41,6 +43,14 @@ function RecordPage() {
     setLogs(newLogs);
     localStorage.setItem(todayKey, JSON.stringify(newLogs));
     setMinutes("");
+
+    // 🎯 ボスが設定されている場合だけダメージを送る
+    const bossData = localStorage.getItem("bossData");
+    if (bossData) {
+      const prev = parseInt(localStorage.getItem("lastDamage") || "0", 10);
+      const total = prev + Number(minutes);
+      localStorage.setItem("lastDamage", String(total));
+    }
 
     // 🎇 爆発エフェクト開始
     setShowExplosion(true);
@@ -52,6 +62,7 @@ function RecordPage() {
     sound.play();
   };
 
+  // ログ削除
   const deleteLog = (index: number) => {
     const newLogs = logs.filter((_, i) => i !== index);
     setLogs(newLogs);
@@ -68,30 +79,29 @@ function RecordPage() {
         value={minutes}
         onChange={(e) => setMinutes(e.currentTarget.value)}
         type="number"
-        style={{ maxWidth: 200, margin: "1rem auto" }}
+        style={{ maxWidth: 400, margin: "1rem auto" }}
       />
-      <Button onClick={addMinutes} color="blue">記録する</Button>
+      <Button onClick={addMinutes} color="blue" size="xs">記録する</Button>
 
       {/* キャラクター */}
       <div style={{ marginTop: "2rem", position: "relative", display: "inline-block" }}>
         <img src="/Characters/グラサンカメ.png" alt="グラサンカメ" width="150" />
 
         {showExplosion && (
-  <div className="explosion">
-    {Array.from({ length: 15 }).map((_, i) => {
-      const x = Math.random() * 200 - 100; // -100 ~ +100
-      const y = Math.random() * 200 - 100; // -100 ~ +100
-      return (
-        <span
-          key={i}
-          className="particle"
-          style={{ "--x": x, "--y": y } as React.CSSProperties}
-        />
-      );
-    })}
-  </div>
-)}
-
+          <div className="explosion">
+            {Array.from({ length: 15 }).map((_, i) => {
+              const x = Math.random() * 200 - 100;
+              const y = Math.random() * 200 - 100;
+              return (
+                <span
+                  key={i}
+                  className="particle"
+                  style={{ "--x": x, "--y": y } as React.CSSProperties}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div style={{ marginTop: "1rem" }}>
